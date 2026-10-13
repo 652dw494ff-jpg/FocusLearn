@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#10131d">
+<title>FocusTime — Soustředění</title>
+<style>
+:root{--bg:#0b1020;--panel:rgba(255,255,255,.075);--panel2:rgba(255,255,255,.045);--text:#f4f6ff;--muted:#a7afc7;--line:rgba(255,255,255,.12);--accent:#8b7cff;--accent2:#51d6c7;--shadow:0 24px 70px rgba(0,0,0,.28)}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:ui-rounded,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(ellipse at 12% 0%,rgba(105,91,255,.22),transparent 38%),radial-gradient(ellipse at 100% 35%,rgba(55,211,190,.12),transparent 34%),var(--bg);color:var(--text);transition:background .25s,color .25s}
+body.light{--bg:#f3f5fc;--panel:rgba(255,255,255,.78);--panel2:rgba(255,255,255,.55);--text:#1b2033;--muted:#6d748b;--line:rgba(25,35,65,.12);--shadow:0 20px 55px rgba(34,45,85,.1);background:radial-gradient(ellipse at 12% 0%,rgba(139,124,255,.16),transparent 38%),radial-gradient(ellipse at 100% 35%,rgba(81,214,199,.15),transparent 34%),var(--bg)}
+.wrap{max-width:1080px;margin:auto;padding:28px 20px 44px}.top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:28px}.brand{display:flex;align-items:center;gap:12px;font-weight:850;font-size:1.2rem;letter-spacing:-.4px}.logo{display:grid;place-items:center;width:43px;height:43px;border-radius:15px;background:linear-gradient(140deg,var(--accent),#5f9dff);box-shadow:0 8px 25px #7568ff55;font-size:21px}.subbrand{display:block;color:var(--muted);font-size:.78rem;font-weight:500;letter-spacing:0;margin-top:2px}.top-actions{display:flex;gap:9px}.iconbtn,.btn{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:14px;padding:11px 14px;font:inherit;cursor:pointer;transition:transform .15s,background .15s}.iconbtn:hover,.btn:hover{transform:translateY(-1px)}.hero{margin:0 0 22px}.eyebrow{color:var(--accent2);font-size:.78rem;font-weight:800;letter-spacing:1.6px;text-transform:uppercase}.hero h1{font-size:clamp(2rem,5vw,3.3rem);letter-spacing:-1.8px;line-height:1.06;margin:10px 0}.hero p{color:var(--muted);margin:0;line-height:1.6}.layout{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;align-items:stretch}.panel{border:1px solid var(--line);background:var(--panel);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:26px;box-shadow:var(--shadow);padding:24px}.panel h2{font-size:1.08rem;margin:0 0 18px;letter-spacing:-.3px}.timer-panel{display:flex;flex-direction:column;align-items:center;text-align:center;justify-content:center;min-height:475px;position:relative;overflow:hidden}.timer-panel:before{content:"";position:absolute;width:300px;height:300px;border-radius:50%;background:var(--accent);filter:blur(110px);opacity:.15;top:25%;left:calc(50% - 150px);pointer-events:none}.session-label{position:relative;color:var(--muted);font-size:.9rem;margin-top:4px}.subject-chip{position:relative;margin-top:14px;padding:8px 13px;border:1px solid var(--line);border-radius:999px;background:var(--panel2);font-size:.9rem;font-weight:700}.clock{position:relative;font-size:clamp(4rem,10vw,6.5rem);font-weight:850;letter-spacing:-4px;line-height:1.15;font-variant-numeric:tabular-nums;margin:24px 0 20px}.ring{position:relative;width:255px;height:255px;display:grid;place-items:center}.ring svg{position:absolute;inset:0;transform:rotate(-90deg);width:100%;height:100%}.ring circle{fill:none;stroke-width:5}.ring .track{stroke:var(--line)}.ring .progress{stroke:var(--accent);stroke-linecap:round;transition:stroke-dashoffset .4s linear}.clock-content{z-index:1}.clock{font-size:clamp(3.6rem,8vw,5.1rem);margin:0}.clock-caption{font-size:.84rem;color:var(--muted);margin-top:4px}.timer-actions{position:relative;display:flex;gap:10px;margin-top:22px;flex-wrap:wrap;justify-content:center}.primary{background:linear-gradient(135deg,var(--accent),#6a91ff);border:0;color:white;font-weight:800;padding:13px 24px;min-width:145px;box-shadow:0 8px 25px #7568ff44}.secondary{background:var(--panel2)}.settings{display:flex;flex-direction:column;gap:18px}.field{display:flex;flex-direction:column;gap:8px}.field label,.field-label{font-size:.87rem;color:var(--muted);font-weight:650}select,input[type=number],input[type=text]{width:100%;border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:13px;padding:12px 13px;font:inherit;outline:none}select option{color:#1b2033;background:#fff}select:focus,input:focus{border-color:var(--accent)}.subject-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.subject-option{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:14px;padding:12px 5px;cursor:pointer;font:inherit;font-size:.84rem;display:flex;flex-direction:column;align-items:center;gap:6px}.subject-option .emoji{font-size:1.35rem}.subject-option.active{border-color:var(--accent);background:rgba(139,124,255,.17);box-shadow:inset 0 0 0 1px var(--accent)}.duration-row{display:grid;grid-template-columns:1fr 100px;gap:10px;align-items:center}.presets{display:flex;gap:7px;flex-wrap:wrap}.preset{padding:7px 11px;border-radius:10px;font-size:.82rem}.range{width:100%;accent-color:var(--accent);cursor:pointer}.hint{font-size:.78rem;color:var(--muted);line-height:1.5}.bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{border:1px solid var(--line);border-radius:16px;padding:15px;background:var(--panel2)}.stat .value{font-size:1.55rem;font-weight:850;letter-spacing:-.7px}.stat .label{font-size:.77rem;color:var(--muted);margin-top:4px}.goalbar{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin:14px 0 8px}.goalbar span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;transition:width .3s}.log{display:flex;flex-direction:column;gap:9px}.empty{color:var(--muted);font-size:.9rem;padding:14px 0}.logitem{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;background:var(--panel2);border:1px solid var(--line);border-radius:13px;font-size:.87rem}.logitem small{display:block;color:var(--muted);margin-top:3px}.logtime{font-weight:800;white-space:nowrap}.footer{text-align:center;color:var(--muted);font-size:.78rem;margin-top:24px}.toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--text);color:var(--bg);padding:12px 18px;border-radius:14px;font-weight:700;box-shadow:var(--shadow);transition:.25s;z-index:5}.toast.show{opacity:1;transform:translate(-50%,0)}.break-mode .progress{stroke:var(--accent2)}.break-mode .timer-panel:before{background:var(--accent2)}
+@media(max-width:780px){.layout{grid-template-columns:1fr}.timer-panel{min-height:420px}.bottom-grid{grid-template-columns:1fr}.wrap{padding:18px 13px 32px}.panel{padding:20px}.hero h1{letter-spacing:-1px}.top{margin-bottom:23px}.ring{width:230px;height:230px}}
+@media(max-width:390px){.subject-grid{grid-template-columns:repeat(2,1fr)}.stat-row{gap:6px}.stat{padding:11px}.stat .value{font-size:1.3rem}}
+
+/* Poznámky a kalkulačka */
+.tools-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px;margin-top:18px}
+.notes-area{width:100%;min-height:190px;resize:vertical;border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:15px;padding:14px;font:inherit;line-height:1.55;outline:none}
+.notes-area:focus{border-color:var(--accent)}
+.notes-meta{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:9px;color:var(--muted);font-size:.78rem}
+.calc-display{width:100%;min-height:66px;border:1px solid var(--line);border-radius:15px;background:var(--panel2);padding:12px 14px;text-align:right;margin-bottom:12px;overflow:hidden}
+.calc-expression{color:var(--muted);font-size:.82rem;min-height:20px;overflow-wrap:anywhere}
+.calc-result{font-size:1.8rem;font-weight:800;overflow-wrap:anywhere}
+.calc-keys{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.calc-key{min-height:46px;border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:13px;font:inherit;font-weight:700;cursor:pointer}
+.calc-key:hover{filter:brightness(1.12)}
+.calc-key.operator{background:rgba(139,124,255,.16);border-color:rgba(139,124,255,.35)}
+.calc-key.equal{background:linear-gradient(135deg,var(--accent),#6a91ff);color:white;border:0}
+.calc-key.wide{grid-column:span 2}
+@media(max-width:780px){.tools-grid{grid-template-columns:1fr}}
+
+
+.subject-hidden{display:none!important}
+
+
+.music-layout{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+.music-select{min-width:0}
+.music-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.music-controls .btn{padding:10px 13px}
+.music-volume{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;margin-top:14px;color:var(--muted);font-size:.8rem}
+.music-status{color:var(--muted);font-size:.82rem;margin-top:10px;line-height:1.5}
+.music-visual{display:flex;gap:4px;align-items:flex-end;height:22px}
+.music-visual span{display:block;width:4px;height:7px;border-radius:5px;background:var(--accent2)}
+.music-visual.playing span{animation:wave .7s ease-in-out infinite alternate}
+.music-visual.playing span:nth-child(2){animation-delay:.15s}.music-visual.playing span:nth-child(3){animation-delay:.3s}.music-visual.playing span:nth-child(4){animation-delay:.1s}
+@keyframes wave{to{height:21px}}
+@media(max-width:480px){.music-layout{grid-template-columns:1fr}.music-controls{justify-content:flex-start}}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><div class="logo">✦</div><div>FocusTime<span class="subbrand">Tvůj prostor pro soustředění</span></div></div>
+    <div class="top-actions"><button class="iconbtn" id="soundBtn" title="Zvuk po dokončení" aria-label="Zvuk po dokončení">🔔</button><button class="iconbtn" id="themeBtn" title="Přepnout vzhled" aria-label="Přepnout vzhled">☀️</button></div>
+  </header>
+  <section class="hero">
+    <div class="eyebrow">Malé kroky, velký pokrok</div>
+    <h1>Teď je čas<br>na soustředění. 🎯</h1>
+    <p>Vyber si předmět, nastav čas a pusť se do toho. Zbytek nech na časovači.</p>
+  </section>
+  <main class="layout">
+    <section class="panel timer-panel" id="timerPanel">
+      <div class="session-label" id="modeLabel">ČAS NA UČENÍ</div>
+      <div class="subject-chip" id="activeSubject">📘 Matematika</div>
+      <div class="ring">
+        <svg viewBox="0 0 100 100" aria-hidden="true"><circle class="track" cx="50" cy="50" r="45"></circle><circle class="progress" id="progressCircle" cx="50" cy="50" r="45"></circle></svg>
+        <div class="clock-content"><div class="clock" id="clock">25:00</div><div class="clock-caption" id="clockCaption">Připraveno, až budeš ty</div></div>
+      </div>
+      <div class="timer-actions">
+        <button class="btn primary" id="startBtn">▶ Začít učit se</button>
+        <button class="btn secondary" id="resetBtn">↺ Reset</button>
+        <button class="btn secondary" id="breakBtn">☕ Přestávka</button>
+      </div>
+      <p class="hint" style="position:relative;margin:17px 0 0">Tip: odlož mobil stranou a soustřeď se vždy jen na jeden úkol.</p>
+    </section>
+    <section class="panel">
+      <h2>⚙️ Nastav si učení</h2>
+      <div class="settings">
+        <div class="field">
+          <label>Co se chceš učit?</label>
+          <div class="subject-grid" id="subjectGrid">
+            <button class="subject-option active" data-subject="Matematika"><span class="emoji">📐</span>Matematika</button>
+            <button class="subject-option" data-subject="Čeština"><span class="emoji">📚</span>Čeština</button>
+            <button class="subject-option" data-subject="Angličtina"><span class="emoji">🇬🇧</span>Angličtina</button>
+            <button class="subject-option" data-subject="Němčina"><span class="emoji">🇩🇪</span>Němčina</button>
+            <button class="subject-option" data-subject="Přírodopis"><span class="emoji">🌿</span>Přírodopis</button>
+            <button class="subject-option" data-subject="Chemie"><span class="emoji">🧪</span>Chemie</button>
+            <button class="subject-option" data-subject="Dějepis"><span class="emoji">🏛️</span>Dějepis</button>
+            <button class="subject-option" data-subject="Fyzika"><span class="emoji">⚡</span>Fyzika</button>
+            <button class="subject-option" data-subject="Jiný předmět"><span class="emoji">✏️</span>Jiný</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="customSubject">Vlastní předmět (nepovinné)</label>
+          <input type="text" id="customSubject" placeholder="Např. zeměpis nebo projekt…" maxlength="40">
+        </div>
+        <div class="field">
+          <label for="duration">Délka učení</label>
+          <div class="duration-row"><input class="range" type="range" id="duration" min="1" max="120" value="25"><input type="number" id="durationNumber" min="1" max="180" value="25" aria-label="Délka učení v minutách"></div>
+          <div class="presets"><button class="btn preset" data-min="15">15 min</button><button class="btn preset" data-min="25">25 min</button><button class="btn preset" data-min="45">45 min</button><button class="btn preset" data-min="60">60 min</button></div>
+          <div class="hint">Posuvníkem nastavíš 1–120 minut, číslem až 180 minut.</div>
+        </div>
+        <div class="field">
+          <label for="breakDuration">Délka přestávky</label>
+          <select id="breakDuration"><option value="5">5 minut</option><option value="10">10 minut</option><option value="15">15 minut</option><option value="20">20 minut</option></select>
+        </div>
+        <div class="field">
+          <label for="dailyGoal">Denní cíl učení</label>
+          <select id="dailyGoal"><option value="30">30 minut</option><option value="60" selected>1 hodina</option><option value="90">1,5 hodiny</option><option value="120">2 hodiny</option><option value="180">3 hodiny</option></select>
+        </div>
+        <p class="hint" style="margin:0">Tvoje nastavení se použije po stisknutí Reset nebo po dokončení aktuálního časovače.</p>
+      </div>
+    </section>
+  </main>
+  <div class="bottom-grid">
+    <section class="panel">
+      <h2>📈 Dnešní přehled</h2>
+      <div class="stat-row">
+        <div class="stat"><div class="value" id="minutesStat">0</div><div class="label">Minut učení</div></div>
+        <div class="stat"><div class="value" id="sessionsStat">0</div><div class="label">Dokončených bloků</div></div>
+        <div class="stat"><div class="value" id="streakStat">0 🔥</div><div class="label">Bloků dnes</div></div>
+      </div>
+      <div class="goalbar"><span id="goalProgress"></span></div>
+      <div class="hint" id="goalText">Dnes máš splněno 0 % svého cíle.</div>
+    </section>
+    <section class="panel">
+      <h2>🗂️ Poslední bloky</h2>
+      <div class="log" id="log"><div class="empty">Zatím tu nic není. Dokonči první blok a objeví se tady. ✨</div></div>
+    </section>
+  </div>
+
+  <div class="tools-grid">
+    <section class="panel">
+      <h2>📝 Poznámky k předmětu</h2>
+      <p class="hint" style="margin-top:-8px;margin-bottom:13px">Každý předmět má vlastní poznámky. Přepni předmět a uvidíš jen jeho zápisky.</p>
+      <div class="field" style="margin-bottom:12px">
+        <label for="notesSubject">Předmět poznámek</label>
+        <select id="notesSubject">
+          <option>Matematika</option><option>Čeština</option><option>Angličtina</option><option>Němčina</option><option>Přírodopis</option><option>Chemie</option><option>Dějepis</option><option>Fyzika</option><option>Jiný předmět</option>
+        </select>
+      </div>
+      <textarea id="studyNotes" class="notes-area" placeholder="Zapiš si vzorečky, pravidla, otázky nebo úkoly…"></textarea>
+      <div class="notes-meta"><span id="notesStatus">Poznámky se ukládají automaticky</span><button class="btn preset" id="clearNotes">Smazat tyto poznámky</button></div>
+    </section>
+    <section class="panel" id="calculatorPanel">
+      <h2>🧮 Rychlá kalkulačka</h2>
+      <div class="calc-display" aria-live="polite">
+        <div class="calc-expression" id="calcExpression">Připraveno k počítání</div>
+        <div class="calc-result" id="calcResult">0</div>
+      </div>
+      <div class="calc-keys" id="calcKeys">
+        <button class="calc-key" data-calc="clear">AC</button>
+        <button class="calc-key" data-calc="back">⌫</button>
+        <button class="calc-key operator" data-value="(">(</button>
+        <button class="calc-key operator" data-value=")">)</button>
+        <button class="calc-key" data-value="7">7</button>
+        <button class="calc-key" data-value="8">8</button>
+        <button class="calc-key" data-value="9">9</button>
+        <button class="calc-key operator" data-value="/">÷</button>
+        <button class="calc-key" data-value="4">4</button>
+        <button class="calc-key" data-value="5">5</button>
+        <button class="calc-key" data-value="6">6</button>
+        <button class="calc-key operator" data-value="*">×</button>
+        <button class="calc-key" data-value="1">1</button>
+        <button class="calc-key" data-value="2">2</button>
+        <button class="calc-key" data-value="3">3</button>
+        <button class="calc-key operator" data-value="-">−</button>
+        <button class="calc-key" data-value="0">0</button>
+        <button class="calc-key" data-value=".">,</button>
+        <button class="calc-key equal" data-calc="equals">=</button>
+        <button class="calc-key operator" data-value="+">+</button>
+      </div>
+      <p class="hint" style="margin:12px 0 0">Umí sčítání, odčítání, násobení, dělení i závorky.</p>
+    </section>
+  </div>
+
+  <section class="panel" style="margin-top:18px">
+    <h2>🎧 Hudba na soustředění</h2>
+    <div class="music-layout">
+      <div class="field music-select">
+        <label for="musicTrack">Vyber si zvukové pozadí</label>
+        <select id="musicTrack">
+          <option value="rain">🌧️ Jemný déšť</option>
+          <option value="forest">🌲 Lesní atmosféra</option>
+          <option value="christmas">🎄 Klidná vánoční hudba</option>
+          <option value="noise">🌌 Jemný šum</option>
+        </select>
+      </div>
+      <div class="music-controls">
+        <button class="btn primary" id="musicToggle">▶ Přehrát</button>
+        <div class="music-visual" id="musicVisual" aria-label="Zvuk je přehráván"><span></span><span></span><span></span><span></span></div>
+      </div>
+    </div>
+    <div class="music-volume"><span>🔈</span><input type="range" class="range" id="musicVolume" min="0" max="100" value="25" aria-label="Hlasitost hudby"><span>🔊</span></div>
+    <div class="music-status" id="musicStatus">Vyber si zvuk a stiskni Přehrát. I klidná vánoční melodie se vytváří přímo v prohlížeči, nic nemusíš stahovat.</div>
+  </section>
+
+  <div class="footer">FocusTime · Každá minuta se počítá 💜</div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const ring = $('progressCircle'), circumference = 2 * Math.PI * 45;
+  ring.style.strokeDasharray = circumference;
+  let subject = 'Matematika', duration = 25, remaining = 25*60, total = 25*60;
+  let running = false, mode = 'study', endAt = null, tick = null, soundOn = true;
+  let sessions = [], minutesToday = 0, completedToday = 0;
+  const emojiMap = {'Matematika':'📐','Čeština':'📚','Angličtina':'🇬🇧','Němčina':'🇩🇪','Přírodopis':'🌿','Chemie':'🧪','Dějepis':'🏛️','Fyzika':'⚡','Jiný předmět':'✏️'};
+  const todayKey = () => new Date().toLocaleDateString('cs-CZ');
+  function chosenSubject(){return $('customSubject').value.trim() || subject}
+  function toast(msg){const el=$('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2500)}
+  function formatTime(s){s=Math.max(0,Math.ceil(s));return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`}
+  function render(){
+    $('clock').textContent=formatTime(remaining);
+    $('activeSubject').textContent=(mode==='study'?(emojiMap[chosenSubject()]||'📖'):'☕')+' '+(mode==='study'?chosenSubject():'Přestávka');
+    $('modeLabel').textContent=mode==='study'?'ČAS NA UČENÍ':'ČAS NA ODPOČINEK';
+    $('clockCaption').textContent=running?(mode==='study'?'Jde ti to, pokračuj! 💪':'Odpočiň si, zasloužíš si to.'):remaining===0?'Hotovo! Skvělá práce 🎉':'Připraveno, až budeš ty';
+    $('startBtn').textContent=running?'Ⅱ Pozastavit':'▶ '+(remaining<total?'Pokračovat':'Začít '+(mode==='study'?'učit se':'přestávku'));
+    ring.style.strokeDashoffset=circumference*(1-(total?remaining/total:0));
+    $('timerPanel').classList.toggle('break-mode',mode==='break');
+    document.title=`${formatTime(remaining)} · FocusTime`;
+  }
+  function stopTick(){if(tick){clearInterval(tick);tick=null}}
+  function pause(){running=false;endAt=null;stopTick();render()}
+  function begin(){if(remaining<=0) resetTimer();running=true;endAt=Date.now()+remaining*1000;stopTick();tick=setInterval(()=>{remaining=Math.max(0,Math.ceil((endAt-Date.now())/1000));if(remaining<=0)finish();else render()},250);render()}
+  function resetTimer(){pause();mode='study';duration=clamp(parseInt($('durationNumber').value,10)||25,1,180);$('durationNumber').value=duration;$('duration').value=Math.min(120,duration);total=remaining=duration*60;render()}
+  function clamp(n,min,max){return Math.max(min,Math.min(max,n))}
+  function finish(){
+    pause();remaining=0;render();
+    if(mode==='study'){
+      const mins=Math.round(total/60);minutesToday+=mins;completedToday++;
+      sessions.unshift({subject:chosenSubject(),minutes:mins,time:new Date().toLocaleTimeString('cs-CZ',{hour:'2-digit',minute:'2-digit'}),date:todayKey()});
+      saveToday();updateStats();renderLog();toast('Blok dokončen! Skvělá práce! 🎉');
+    }else toast('Přestávka skončila. Jdeme na to? 💪');
+    if(soundOn){try{const ctx=new (window.AudioContext||window.webkitAudioContext)();[660,880].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=f;g.gain.value=.08;o.connect(g);g.connect(ctx.destination);o.start(ctx.currentTime+i*.18);o.stop(ctx.currentTime+i*.18+.13)})}catch(e){}}
+  }
+  function startBreak(){pause();mode='break';total=remaining=(parseInt($('breakDuration').value,10)||5)*60;begin()}
+  function saveToday(){try{localStorage.setItem('focustime-'+todayKey(),JSON.stringify({minutesToday,completedToday,sessions}))}catch(e){}}
+  function loadToday(){try{const d=JSON.parse(localStorage.getItem('focustime-'+todayKey())||'null');if(d){minutesToday=d.minutesToday||0;completedToday=d.completedToday||0;sessions=d.sessions||[]}}catch(e){}}
+  function updateStats(){ $('minutesStat').textContent=minutesToday;$('sessionsStat').textContent=completedToday;$('streakStat').textContent=completedToday+' 🔥';const goal=parseInt($('dailyGoal').value,10)||60;const pct=Math.min(100,Math.round(minutesToday/goal*100));$('goalProgress').style.width=pct+'%';$('goalText').textContent=`Máš splněno ${pct} % denního cíle (${minutesToday} z ${goal} minut). ${pct>=100?'Cíl splněn! Paráda! 🏆':''}`}
+  function renderLog(){const el=$('log');if(!sessions.length){el.innerHTML='<div class="empty">Zatím tu nic není. Dokonči první blok a objeví se tady. ✨</div>';return}el.innerHTML=sessions.slice(0,5).map(s=>`<div class="logitem"><div><strong>${escapeHtml(emojiMap[s.subject]||'📖')} ${escapeHtml(s.subject)}</strong><small>Dokončeno v ${s.time}</small></div><div class="logtime">${s.minutes} min</div></div>`).join('')}
+  function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+  document.querySelectorAll('.subject-option').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.subject-option').forEach(b=>b.classList.remove('active'));btn.classList.add('active');subject=btn.dataset.subject;if(!$('customSubject').value.trim())render();updateSubjectTools()}));
+  $('customSubject').addEventListener('input',()=>{render();updateSubjectTools()});
+  $('duration').addEventListener('input',e=>{$('durationNumber').value=e.target.value;resetTimer()});
+  $('durationNumber').addEventListener('change',()=>resetTimer());
+  document.querySelectorAll('[data-min]').forEach(b=>b.addEventListener('click',()=>{$('durationNumber').value=b.dataset.min;resetTimer()}));
+  $('startBtn').addEventListener('click',()=>running?pause():begin());
+  $('resetBtn').addEventListener('click',()=>{resetTimer();toast('Časovač je resetovaný.')});
+  $('breakBtn').addEventListener('click',startBreak);
+  $('breakDuration').addEventListener('change',()=>{if(mode==='break'&&!running){total=remaining=(parseInt($('breakDuration').value,10)||5)*60;render()}});
+  $('dailyGoal').addEventListener('change',updateStats);
+  $('themeBtn').addEventListener('click',()=>{document.body.classList.toggle('light');$('themeBtn').textContent=document.body.classList.contains('light')?'🌙':'☀️';try{localStorage.setItem('focustime-theme',document.body.classList.contains('light')?'light':'dark')}catch(e){}});
+  $('soundBtn').addEventListener('click',()=>{soundOn=!soundOn;$('soundBtn').textContent=soundOn?'🔔':'🔕';toast(soundOn?'Zvuk zapnutý':'Zvuk vypnutý')});
+  try{if(localStorage.getItem('focustime-theme')==='light'){document.body.classList.add('light');$('themeBtn').textContent='🌙'}}catch(e){}
+
+  // Poznámky jsou uložené odděleně pro každý předmět.
+  const notes = $('studyNotes');
+  const notesSubject = $('notesSubject');
+  function notesKey(subjectName) { return 'focustime-notes-' + subjectName; }
+  function loadSubjectNotes() {
+    try { notes.value = localStorage.getItem(notesKey(notesSubject.value)) || ''; }
+    catch(e) { notes.value = ''; }
+    $('notesStatus').textContent = 'Poznámky pro ' + notesSubject.value;
+  }
+  function saveSubjectNotes() {
+    try {
+      localStorage.setItem(notesKey(notesSubject.value), notes.value);
+      $('notesStatus').textContent = 'Uloženo ✓ · ' + notesSubject.value;
+    } catch(e) { $('notesStatus').textContent = 'Ukládání není dostupné'; }
+  }
+  notesSubject.addEventListener('change', loadSubjectNotes);
+  notes.addEventListener('input', saveSubjectNotes);
+  $('clearNotes').addEventListener('click', () => {
+    if (!notes.value || confirm('Opravdu chceš smazat poznámky z předmětu ' + notesSubject.value + '?')) {
+      notes.value = '';
+      try { localStorage.removeItem(notesKey(notesSubject.value)); } catch(e) {}
+      $('notesStatus').textContent = 'Poznámky smazány';
+    }
+  });
+  function updateSubjectTools() {
+    // Kalkulačka je dostupná pouze při výběru matematiky.
+    const isMath = chosenSubject() === 'Matematika';
+    $('calculatorPanel').classList.toggle('subject-hidden', !isMath);
+  }
+  // Jednoduchá kalkulačka s bezpečným parserem výrazů (bez eval)
+  let calcInput = '';
+  function calcFormat(n) {
+    if (!Number.isFinite(n)) throw new Error('Neplatný výsledek');
+    return String(Number(n.toPrecision(12))).replace('.', ',');
+  }
+  function calcEvaluate(source) {
+    const s = source.replace(/,/g, '.').replace(/\s+/g, '');
+    let i = 0;
+    function expr() {
+      let n = term();
+      while (s[i] === '+' || s[i] === '-') {
+        const op = s[i++], rhs = term();
+        n = op === '+' ? n + rhs : n - rhs;
+      }
+      return n;
+    }
+    function term() {
+      let n = unary();
+      while (s[i] === '*' || s[i] === '/') {
+        const op = s[i++], rhs = unary();
+        if (op === '/' && rhs === 0) throw new Error('Nulou dělit nejde');
+        n = op === '*' ? n * rhs : n / rhs;
+      }
+      return n;
+    }
+    function unary() {
+      if (s[i] === '+') { i++; return unary(); }
+      if (s[i] === '-') { i++; return -unary(); }
+      if (s[i] === '(') {
+        i++; const n = expr();
+        if (s[i] !== ')') throw new Error('Chybí )');
+        i++; return n;
+      }
+      const start = i;
+      while (/[0-9.]/.test(s[i] || '') && i < s.length) i++;
+      if (start === i) throw new Error('Zkontroluj výraz');
+      const part = s.slice(start, i);
+      if ((part.match(/\./g) || []).length > 1) throw new Error('Neplatné číslo');
+      return Number(part);
+    }
+    if (!s) return 0;
+    const value = expr();
+    if (i !== s.length) throw new Error('Zkontroluj výraz');
+    return value;
+  }
+  function updateCalc(result) {
+    $('calcExpression').textContent = calcInput ? calcInput.replace(/\*/g,' × ').replace(/\//g,' ÷ ').replace(/\./g,',') : 'Připraveno k počítání';
+    $('calcResult').textContent = result;
+  }
+  $('calcKeys').addEventListener('click', e => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    if (btn.dataset.calc === 'clear') { calcInput=''; updateCalc('0'); return; }
+    if (btn.dataset.calc === 'back') { calcInput=calcInput.slice(0,-1); updateCalc(calcInput ? '…' : '0'); return; }
+    if (btn.dataset.calc === 'equals') {
+      try { const result=calcEvaluate(calcInput); $('calcExpression').textContent=calcInput.replace(/\*/g,' × ').replace(/\//g,' ÷ ').replace(/\./g,',')+' ='; $('calcResult').textContent=calcFormat(result); calcInput=String(result); }
+      catch(err) { $('calcResult').textContent=err.message || 'Chyba'; }
+      return;
+    }
+    const value=btn.dataset.value;
+    if (value) { calcInput += value; updateCalc(calcInput); }
+  });
+
+
+  // Generované zvukové prostředí – funguje bez externích souborů.
+  let audioCtx = null, musicNodes = [], musicPlaying = false, noiseSource = null, noiseGain = null;
+  function stopMusicNodes() {
+    musicNodes.forEach(n => { try { if (n.stop) n.stop(); } catch(e) {} try { if (n.disconnect) n.disconnect(); } catch(e) {} });
+    musicNodes = [];
+    if (noiseSource) { try { noiseSource.stop(); } catch(e) {} try { noiseSource.disconnect(); } catch(e) {} noiseSource = null; }
+    if (noiseGain) { try { noiseGain.disconnect(); } catch(e) {} noiseGain = null; }
+  }
+  function makeNoise(ctx, color='white') {
+    const buffer = ctx.createBuffer(1, ctx.sampleRate * 3, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    let last = 0;
+    for (let i=0;i<data.length;i++) {
+      const white = Math.random()*2-1;
+      if (color === 'brown') { last = (last + 0.02*white)/1.02; data[i] = last*3.5; }
+      else if (color === 'pink') { last = 0.97*last + 0.03*white; data[i] = last*2.2; }
+      else data[i] = white;
+    }
+    const src = ctx.createBufferSource(); src.buffer=buffer; src.loop=true;
+    const gain=ctx.createGain(); gain.gain.value=0.0001;
+    src.connect(gain); gain.connect(ctx.destination); src.start();
+    musicNodes.push(src,gain); noiseSource=src; noiseGain=gain;
+    return gain;
+  }
+  function playMusic() {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) { $('musicStatus').textContent='Tento prohlížeč nepodporuje přehrávání zvuku.'; return; }
+    try {
+      if (!audioCtx) audioCtx = new Ctx();
+      audioCtx.resume();
+      stopMusicNodes();
+      const track = $('musicTrack').value;
+      const vol = (parseInt($('musicVolume').value,10)||0)/100;
+      if (track === 'noise') {
+        const g = makeNoise(audioCtx,'pink'); g.gain.setTargetAtTime(vol*0.12,audioCtx.currentTime,0.3);
+      } else if (track === 'rain') {
+        const g = makeNoise(audioCtx,'white'); g.gain.setTargetAtTime(vol*0.16,audioCtx.currentTime,0.4);
+        const filter=audioCtx.createBiquadFilter(); filter.type='lowpass'; filter.frequency.value=1400;
+        // Reconnect noise through a soft low-pass filter.
+        noiseSource.disconnect(); noiseSource.connect(filter); filter.connect(g);
+        musicNodes.push(filter);
+        const osc=audioCtx.createOscillator(), og=audioCtx.createGain();
+        osc.type='sine'; osc.frequency.value=58; og.gain.value=vol*0.012;
+        osc.connect(og); og.connect(audioCtx.destination); osc.start(); musicNodes.push(osc,og);
+      } else if (track === 'forest') {
+        const g=makeNoise(audioCtx,'pink'); g.gain.setTargetAtTime(vol*0.07,audioCtx.currentTime,0.5);
+        const filter=audioCtx.createBiquadFilter(); filter.type='lowpass'; filter.frequency.value=700;
+        noiseSource.disconnect(); noiseSource.connect(filter); filter.connect(g); musicNodes.push(filter);
+        [523.25,659.25,783.99].forEach((freq,i)=>{const o=audioCtx.createOscillator(), gain=audioCtx.createGain();o.type='sine';o.frequency.value=freq;gain.gain.value=vol*0.003;o.connect(gain);gain.connect(audioCtx.destination);o.start();musicNodes.push(o,gain)});
+      } else if (track === 'christmas') {
+        // Jemná, pomalá vánoční melodie vytvořená synteticky přímo v prohlížeči.
+        const master = audioCtx.createGain();
+        master.gain.value = vol * 0.10;
+        master.connect(audioCtx.destination);
+        const notes = [
+          [523.25,0.0,0.9],[659.25,1.0,0.8],[783.99,2.0,1.0],
+          [659.25,3.2,0.8],[587.33,4.2,0.9],[698.46,5.2,0.9],
+          [783.99,6.3,1.1],[698.46,7.6,0.9],[523.25,8.7,1.2],
+          [587.33,10.2,0.9],[659.25,11.3,1.2],[523.25,12.8,1.5]
+        ];
+        const startTime = audioCtx.currentTime + 0.05;
+        notes.forEach(([freq,offset,duration],idx) => {
+          const osc = audioCtx.createOscillator();
+          const env = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = freq;
+          const t = startTime + offset;
+          env.gain.setValueAtTime(0.0001,t);
+          env.gain.linearRampToValueAtTime(0.65,t+0.12);
+          env.gain.setTargetAtTime(0.0001,t+0.18,Math.max(0.12,duration/3));
+          osc.connect(env); env.connect(master);
+          osc.start(t); osc.stop(t+duration+0.35);
+          musicNodes.push(osc,env);
+        });
+        // Tichý, hřejivý podklad v pomalém tempu.
+        [261.63,329.63,392.00].forEach((freq,idx)=>{
+          const osc=audioCtx.createOscillator(), gain=audioCtx.createGain();
+          osc.type='sine'; osc.frequency.value=freq;
+          gain.gain.value=vol*0.009;
+          osc.connect(gain); gain.connect(audioCtx.destination);
+          osc.start(); musicNodes.push(osc,gain);
+        });
+        musicNodes.push(master);
+      }
+      musicPlaying=true;
+      $('musicToggle').textContent='Ⅱ Pozastavit';
+      $('musicVisual').classList.add('playing');
+      $('musicStatus').textContent='Přehrává se: '+$('musicTrack').selectedOptions[0].textContent+' · hlasitost '+Math.round(vol*100)+' %.';
+    } catch(e) {
+      stopMusicNodes(); musicPlaying=false;
+      $('musicStatus').textContent='Zvuk se nepodařilo spustit. Zkus kliknout na Přehrát znovu.';
+    }
+  }
+  function pauseMusic() {
+    stopMusicNodes(); musicPlaying=false;
+    $('musicToggle').textContent='▶ Přehrát';
+    $('musicVisual').classList.remove('playing');
+    $('musicStatus').textContent='Zvuk je pozastavený.';
+  }
+  $('musicToggle').addEventListener('click',()=>musicPlaying?pauseMusic():playMusic());
+  $('musicTrack').addEventListener('change',()=>{if(musicPlaying)playMusic();else $('musicStatus').textContent='Vybráno: '+$('musicTrack').selectedOptions[0].textContent+'. Stiskni Přehrát.'});
+  $('musicVolume').addEventListener('input',()=>{if(musicPlaying)playMusic()});
+
+  loadSubjectNotes();updateSubjectTools();loadToday();updateStats();renderLog();render();
+})();
+</script>
+</body>
+</html>
